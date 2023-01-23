@@ -1,0 +1,9 @@
+DFS-I(i, sol)
+    if (i == n + 1)
+        if (viable (sol))
+	    return(cost(sol))
+        else
+	    return(INFINITY)
+    else
+        return(min(DFS-I(i + 1, sol),
+	           DFS-I(i + 1, sol U item[i])))
