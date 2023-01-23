@@ -47,7 +47,8 @@ def main():
     # print(len(union))
     # print(os.getcwd())
     # cst = CST(sys.argv[1])
-    cst = CST("D:\DrewSchool\CS3600\Assignment1\iSet2.txt")
+    # cst = CST("D:\DrewSchool\CS3600\Assignment1\iSet2.txt") #for windows
+    cst = CST("/Users/drewgriffiths/Desktop/CS3600/CS3600/Assignment1/iSet8.txt") #for mac
     print(cst.n)
     print(cst.universe)
     print(cst.dict)
@@ -67,6 +68,8 @@ class CST:
         self.optSol = []
         self.optCost = []
         self.dict = {}
+        self.leftSide = sys.maxsize
+        self.rightSide = sys.maxsize
         self.load(fileName)
 
     def load(self, filename) -> None:
@@ -95,17 +98,28 @@ class CST:
     def costDFS(self, i: int, sol: str) -> int:
         if (i == (self.n + 1)):
             if (self.isViable(sol)):
-                return(len(sol))
+                print(sol)
+                viableList = sol.split()
+                return(len(viableList))
             else:
-                return float('inf')
+                return sys.maxsize
         else:
-            leftSide = self.costDFS(i + 1, sol)
+            # print("left side sol:  ", sol + " i: %d" % i)
+            newLeftSide = self.costDFS(i + 1, sol)
+            if newLeftSide < self.leftSide:
+                self.leftSide = newLeftSide
             if i == self.n:
                 sol += str(i)
             else:
                 sol += str(i) + " "
-            rightSide = self.costDFS(i + 1, sol)
-            return min(leftSide, rightSide)
+            # print("right side sol: ", sol + " i: %d" % i)
+            newRightSide = self.costDFS(i + 1, sol)
+            if newRightSide < self.rightSide:
+                self.rightSide = newRightSide
+            # print("new left side = ", newLeftSide)
+            # print("new right side = ", newRightSide)
+            # print('MIN VALUE RETURNED %d' % min(self.leftSide, self.rightSide))
+            return min(self.leftSide, self.rightSide)
 
     def isViable(self, sol: str) -> bool:
         if (sol == ""):
@@ -122,8 +136,8 @@ class CST:
         else:
             solUnion = self.dict[int(solList[0])]
             for i in range(1, len(solList)):
-                solUnion.union(self.dict[int(solList[i])])
-            if(all(x in self.universe for x in solUnion)):
+                solUnion = solUnion.union(self.dict[int(solList[i])])
+            if(all(x in solUnion for x in self.universe)):
                 return True
             else:
                 return False
