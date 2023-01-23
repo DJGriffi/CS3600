@@ -51,7 +51,7 @@ def main():
     print(cst.n)
     print(cst.universe)
     print(cst.dict)
-    sol = []
+    sol = ""
     print(cst.costDFS(1, sol))
 
 
@@ -88,11 +88,11 @@ class CST:
                 for ele in subSetArr[i - 1]:
                     self.dict[i] = set(subSetArr[i - 1])
 
-    def addEle(self, sol: list, i: int) -> list:
-        sol.append(i)
-        return sol
+    # def addEle(self, sol: str, i: int) -> list:
+    #     sol.append(i)
+    #     return sol
 
-    def costDFS(self, i: int, sol: list) -> int:
+    def costDFS(self, i: int, sol: str) -> int:
         if (i == (self.n + 1)):
             if (self.isViable(sol)):
                 return(len(sol))
@@ -100,25 +100,29 @@ class CST:
                 return float('inf')
         else:
             leftSide = self.costDFS(i + 1, sol)
-
-            rightSide = self.costDFS(i + 1, self.addEle(sol, i))
+            if i == self.n:
+                sol += str(i)
+            else:
+                sol += str(i) + " "
+            rightSide = self.costDFS(i + 1, sol)
             return min(leftSide, rightSide)
 
-    def isViable(self, sol: list) -> bool:
-        if (sol == None or len(sol) == 0):
+    def isViable(self, sol: str) -> bool:
+        if (sol == ""):
             return False
-        if (len(sol) == 1):
-            if (len(self.dict[sol[0]]) != len(self.universe)):
+        solList = sol.split()
+        if (len(solList) == 1):
+            if (len(self.dict[int(solList[0])]) != len(self.universe)):
                 return False
             else:
-                if(all(x in self.universe for x in self.dict[sol[0]])):
+                if(all(x in self.universe for x in self.dict[int(solList[0])])):
                     return True
                 else:
                     return False
         else:
-            solUnion = self.dict[sol[0]]
-            for i in range(1, len(sol)):
-                solUnion.union(self.dict[sol[i]])
+            solUnion = self.dict[int(solList[0])]
+            for i in range(1, len(solList)):
+                solUnion.union(self.dict[int(solList[i])])
             if(all(x in self.universe for x in solUnion)):
                 return True
             else:
