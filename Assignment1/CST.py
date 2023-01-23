@@ -46,14 +46,16 @@ def main():
     # print(type(union))
     # print(len(union))
     # print(os.getcwd())
-    # cst = CST(sys.argv[1])
+    cst = CST(sys.argv[1])
     # cst = CST("D:\DrewSchool\CS3600\Assignment1\iSet2.txt") #for windows
-    cst = CST("/Users/drewgriffiths/Desktop/CS3600/CS3600/Assignment1/iSet8.txt") #for mac
-    print(cst.n)
-    print(cst.universe)
-    print(cst.dict)
+    # cst = CST("/Users/drewgriffiths/Desktop/CS3600/CS3600/Assignment1/iSet8.txt") #for mac
+    # print(cst.n)
+    print("The item universe is : ", cst.universe)
+    print("The given subsets are : ", cst.dict)
     sol = ""
-    print(cst.costDFS(1, sol))
+    cst.costDFS(1, sol)
+    print("The optimal cost is : ", cst.optCost)
+    print("The optimal solution subset covers: ", cst.optSol)
 
 
     
@@ -66,7 +68,7 @@ class CST:
         self.n = None   
         self.universe = None
         self.optSol = []
-        self.optCost = []
+        self.optCost = sys.maxsize
         self.dict = {}
         self.leftSide = sys.maxsize
         self.rightSide = sys.maxsize
@@ -96,30 +98,74 @@ class CST:
     #     return sol
 
     def costDFS(self, i: int, sol: str) -> int:
+        if (self.optCost != sys.maxsize and len(sol.split()) > self.optCost):
+            return sys.maxsize
+
         if (i == (self.n + 1)):
             if (self.isViable(sol)):
-                print(sol)
+                # print(sol)
                 viableList = sol.split()
+                if len(viableList) < self.optCost:
+                    self.optCost = len(viableList)
+                    self.optSol = [[sol]]
+                elif len(viableList) == self.optCost:
+                    self.optSol.append([sol])
                 return(len(viableList))
             else:
                 return sys.maxsize
-        else:
+
+        # if (self.isViable(sol)):
+        #     viableList = sol.split()
+        #     if len(viableList) < self.optCost:
+        #         self.optCost = len(viableList)
+        #         self.optSol = [[sol]]
+        #     elif len(viableList) == self.optCost:
+        #         self.optSol.append([sol])
+        
+        # else:
             # print("left side sol:  ", sol + " i: %d" % i)
-            newLeftSide = self.costDFS(i + 1, sol)
-            if newLeftSide < self.leftSide:
-                self.leftSide = newLeftSide
-            if i == self.n:
-                sol += str(i)
-            else:
-                sol += str(i) + " "
+        # newLeftSide = self.costDFS(i + 1, sol)
+        self.costDFS(i + 1, sol)
+        # if newLeftSide < self.leftSide:
+        #     self.leftSide = newLeftSide
+        if i == self.n:
+            sol += str(i)
+        else:
+            sol += str(i) + " "
             # print("right side sol: ", sol + " i: %d" % i)
-            newRightSide = self.costDFS(i + 1, sol)
-            if newRightSide < self.rightSide:
-                self.rightSide = newRightSide
+        self.costDFS(i + 1, sol)
+        # newRightSide = self.costDFS(i + 1, sol)
+        # if newRightSide < self.rightSide:
+        #     self.rightSide = newRightSide
             # print("new left side = ", newLeftSide)
             # print("new right side = ", newRightSide)
             # print('MIN VALUE RETURNED %d' % min(self.leftSide, self.rightSide))
-            return min(self.leftSide, self.rightSide)
+
+            # if newRightSide < newLeftSide and newRightSide <= self.optCost:
+            #     if newRightSide < self.optCost:
+            #         self.optCost = newRightSide
+            #         if i == (self.n - 1):
+            #             newSol = sol + str(i + 1)
+            #         else:
+            #             newSol = sol + str(i + 1) 
+            #         self.optSol = [[newSol]]
+            #     else:
+            #         self.optSol.append([sol])
+                
+            # elif newLeftSide < newRightSide and newLeftSide <= self.optCost:
+            #     if newLeftSide < self.optCost:
+            #         self.optCost = newLeftSide
+            #         self.optSol = [[sol]]
+            #     else:
+            #         self.optSol.append([sol])
+
+            
+        # minVal = min(self.leftSide, self. rightSide)
+
+        # if minVal < self.optCost:
+            # self.optSol = [[sol]]
+            # self.optCost = minVal
+        return 
 
     def isViable(self, sol: str) -> bool:
         if (sol == ""):

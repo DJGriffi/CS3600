@@ -6,6 +6,8 @@ def main():
         else:
          test += str(i) + " "
     print(test)
+    testlist = [[test]]
+    print(testlist)
     listTest = test.split()
     print(listTest)
 
