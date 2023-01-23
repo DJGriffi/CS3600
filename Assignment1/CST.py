@@ -47,7 +47,7 @@ def main():
     # print(len(union))
     # print(os.getcwd())
     # cst = CST(sys.argv[1])
-    cst = CST("D:\DrewSchool\CS3600\Assignment1\iSet1.txt")
+    cst = CST("D:\DrewSchool\CS3600\Assignment1\iSet2.txt")
     print(cst.n)
     print(cst.universe)
     print(cst.dict)
