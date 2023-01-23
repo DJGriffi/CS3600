@@ -88,6 +88,9 @@ class CST:
                 for ele in subSetArr[i - 1]:
                     self.dict[i] = set(subSetArr[i - 1])
 
+    def addEle(self, sol: list, i: int) -> list:
+        sol.append(i)
+        return sol
 
     def costDFS(self, i: int, sol: list) -> int:
         if (i == (self.n + 1)):
@@ -97,11 +100,8 @@ class CST:
                 return float('inf')
         else:
             leftSide = self.costDFS(i + 1, sol)
-            if sol == None:
-                sol = [i]
-                rightSide = self.costDFS(i + 1, sol)
-            else:
-                rightSide = self.costDFS(i + 1, sol.append(i))
+
+            rightSide = self.costDFS(i + 1, self.addEle(sol, i))
             return min(leftSide, rightSide)
 
     def isViable(self, sol: list) -> bool:
@@ -116,7 +116,7 @@ class CST:
                 else:
                     return False
         else:
-            solUnion = self.dict(sol[0])
+            solUnion = self.dict[sol[0]]
             for i in range(1, len(sol)):
                 solUnion.union(self.dict[sol[i]])
             if(all(x in self.universe for x in solUnion)):
