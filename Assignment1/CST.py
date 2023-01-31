@@ -1,6 +1,7 @@
 import sys
 
 def main():
+
     cst = CST(sys.argv[1])
     print("The item universe is : ", cst.universe)
     print("The given subsets are : ", cst.dict)
@@ -13,6 +14,11 @@ def main():
 class CST:
 
     def __init__(self, fileName: str) -> None:
+        """_summary_
+
+        Args:
+            fileName (str): _description_
+        """
         self.n = None   
         self.universe = None
         self.optSol = []
@@ -23,7 +29,12 @@ class CST:
         self.load(fileName)
 
         
-    def load(self, filename) -> None:
+    def load(self, filename: str) -> None:
+        """_summary_
+
+        Args:
+            filename (str): _description_
+        """
         with open(filename, 'r') as file:
 
             nm = file.readline().strip().split() #makes array
@@ -44,6 +55,15 @@ class CST:
 
 
     def costDFS(self, i: int, sol: str) -> int:
+        """_summary_
+
+        Args:
+            i (int): _description_
+            sol (str): _description_
+
+        Returns:
+            int: _description_
+        """
         if (self.optCost != sys.maxsize and len(sol.split()) > self.optCost):
             return sys.maxsize
 
@@ -70,6 +90,14 @@ class CST:
         return
     
     def isViable(self, sol: str) -> bool:
+        """_summary_
+
+        Args:
+            sol (str): _description_
+
+        Returns:
+            bool: _description_
+        """
         if (sol == ""):
             return False
         solList = sol.split()
