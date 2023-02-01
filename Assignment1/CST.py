@@ -128,7 +128,7 @@ class CST:
     
     def isViable(self, sol: str) -> bool:
         """
-        Checks if the current solution (sol) is viable. This means that the
+        Checks if the current solution (sol) is viable. Viable means that the
         union of all the sub-sets in the solution exactly matches the set cover
         problems universe.
 
