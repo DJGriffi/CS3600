@@ -1,24 +1,51 @@
+#########################################################
+##  CS 3600 (Winter 2023), Assignment #1, Question #1  ##
+##   Script File Name: CST.py                          ##
+##       Student Name: Drew Griffiths                  ##
+##         Login Name: djamesg                         ##
+##              MUN #: 201997184                       ##
+#########################################################
+
 import sys
 
 def main():
 
     cst = CST(sys.argv[1])
-    print("The item universe is : ", cst.universe)
-    print("The given subsets are : ", cst.dict)
+    print("The item universe is : ", end='')
+    for ele in cst.universe:
+        print(ele, end=' ')
+    print()
+    print("The given subsets are : ")
+    for x, y in cst.dict.items():
+        print(str(x) + ": " + str(sorted(y)))
     sol = ""
-    cst.costDFS(1, sol)
+    cst.DFS(1, sol)
     print("The optimal cost is : ", cst.optCost)
-    print("The optimal solution subset covers: ", cst.optSol)
+    print("The optimal solution subset covers: ")
+    for ele in cst.optSol:
+        print("{", end=' ')
+        for val in ele:
+            for c in val:
+                if c == ' ': continue
+                print(c, end=' ')
+            print("}")
+
 
 
 class CST:
+    """
+    Takes a set cover problem via a .txt file and recursively performs depth-first
+    search to find the minimal set cover solution.
+    """
 
     def __init__(self, fileName: str) -> None:
-        """_summary_
+        """
+        Constructor 
 
         Args:
-            fileName (str): _description_
+            fileName (str): name of .txt file to be read in
         """
+
         self.n = None   
         self.universe = None
         self.optSol = []
@@ -30,11 +57,14 @@ class CST:
 
         
     def load(self, filename: str) -> None:
-        """_summary_
-
-        Args:
-            filename (str): _description_
         """
+        Parses given text file and sets the instance variables n (number of sets given),
+        universe (set universe), and dict (dictionary of given sub-sets).
+        
+        Args:
+            filename (str): .txt file of a specific set cover problem
+        """
+
         with open(filename, 'r') as file:
 
             nm = file.readline().strip().split() #makes array
@@ -54,22 +84,29 @@ class CST:
                     self.dict[i] = set(subSetArr[i - 1])
 
 
-    def costDFS(self, i: int, sol: str) -> int:
-        """_summary_
+    def DFS(self, i: int, sol: str) -> int:
+        """
+        Performs recursive depth-first search algorithm until a leaf node is
+        reached. Along the way, the algorithm will keep track of the lowest
+        number of sub-sets found in a viable solution. If the current branch
+        will not lead to an equal number, or lower number, of sub-sets in the 
+        current solution than in the already found minimum set cover, the branch 
+        will be pruned. DFS will also keep track of the best found solutions as 
+        the tree is traversed. 
 
         Args:
-            i (int): _description_
-            sol (str): _description_
+            i (int): current depth
+            sol (str): current set cover solution
 
         Returns:
-            int: _description_
+            int: the number of sub-sets in the current set cover solution.
         """
+
         if (self.optCost != sys.maxsize and len(sol.split()) > self.optCost):
             return sys.maxsize
 
         if (i == (self.n + 1)):
             if (self.isViable(sol)):
-                # print(sol)
                 viableList = sol.split()
                 if len(viableList) < self.optCost:
                     self.optCost = len(viableList)
@@ -80,24 +117,29 @@ class CST:
             else:
                 return sys.maxsize
 
-        self.costDFS(i + 1, sol)
+        self.DFS(i + 1, sol)
         if i == self.n:
             sol += str(i)
         else:
             sol += str(i) + " "
-        self.costDFS(i + 1, sol)
+        self.DFS(i + 1, sol)
 
         return
     
     def isViable(self, sol: str) -> bool:
-        """_summary_
+        """
+        Checks if the current solution (sol) is viable. This means that the
+        union of all the sub-sets in the solution exactly matches the set cover
+        problems universe.
 
         Args:
-            sol (str): _description_
+            sol (str): current set cover solution given as a string. 
+            ex: '1 3 4' would mean the current solution is subsets 1, 3 and 4.
 
         Returns:
-            bool: _description_
+            bool: true if solution is viable, otherwise false
         """
+
         if (sol == ""):
             return False
         solList = sol.split()
